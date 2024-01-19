@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Homepage</title>
+</head>
+<body>
+    <h1>Homepage!</h1>
+    <div id="userGreeting">
+        <!-- Greeting message will appear here -->
+    </div>
+
+    <script>
+        // Function to get URL parameters
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+
+        // Fetch user details from the URL
+        var username = getParameterByName('username');
+
+        // Display a greeting with the username
+        var userGreetingDiv = document.getElementById("userGreeting");
+        userGreetingDiv.innerHTML = `<p>Welcome, ${username}!</p>`;
+    </script>
+</body>
+</html>
+
+<!-- Add Shipment Tracking Number Form -->
+<div>
+    <h2>Add Shipment Tracking Number</h2>
+    <form id="shipmentForm">
+        <label for="package_name">Package Name:</label>
+        <input type="text" id="package_name" name="package_name"><br><br>
+        
+        <label for="tracking_number">Tracking Number:</label>
+        <input type="text" id="tracking_number" name="tracking_number"><br><br>
+        
+        <input type="submit" value="Add">
+    </form>
+</div>
+
+<script>
+    document.getElementById("shipmentForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        
+        var package_name = document.getElementById("package_name").value;
+        var tracking_number = document.getElementById("tracking_number").value;
+        
+        // Fetch to add the tracking number
+        fetch('http://127.0.0.1:5000/add_package', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ "package_name": package_name, "tracking_number": tracking_number })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Add shipment response:', data);
+            alert(data.message); // Display the message from the server
+            // Optionally, you can update the UI or show a success message
+        })
+        .catch(error => {
+            console.error('There was an error adding shipment:', error);
+            alert('Failed to add shipment. Please try again.');
+        });
+    });
+</script>

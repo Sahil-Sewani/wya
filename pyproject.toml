@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "wya"
+version = "1.0"
+description = "Contains the main code for the wya app"
+authors = ["Your Name <you@example.com>"]
+license = "n/a"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+flask = "^3.0.0"
+flask-sqlalchemy = "^3.1.1"
+flask-jwt-extended = "^4.6.0"
+pymysql = "^1.1.0"
+flask-cors = "^4.0.0"
+flask-bcrypt = "^1.0.1"
+requests = "^2.31.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

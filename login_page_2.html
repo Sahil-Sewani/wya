@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Login</title>
+</head>
+<body>
+    <h1>User Login</h1>
+    <form id="loginForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username"><br><br>
+        
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password"><br><br>
+        
+        <input type="submit" value="Login">
+    </form>
+
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+            
+            fetch('http://127.0.0.1:5000/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ "username": username, "password": password })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Login response:', data);
+                alert(data.message); // Display the message from the server
+                // If login is successful, redirect to the homepage
+                if (data.message === 'Login successful') {
+                    window.location.href = `home_page_3.html?username=${username}`; // Replace with your homepage URL
+                }
+            })
+            .catch(error => {
+                console.error('There was an error logging in:', error);
+                alert('Failed to login. Please try again.');
+            });
+        });
+    </script>
+</body>
+</html>
+

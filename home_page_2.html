@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Homepage</title>
+</head>
+<body>
+    <h1>Welcome to Your Homepage!</h1>
+    <div id="userGreeting">
+        <!-- Greeting message will appear here -->
+    </div>
+
+    <script>
+         // Function to get URL parameters
+         function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+
+        // Fetch user details from the URL
+        var username = getParameterByName('username');
+
+        // Display a greeting with the username
+        var userGreetingDiv = document.getElementById("userGreeting");
+        userGreetingDiv.innerHTML = `<p>Welcome, ${username}!</p>`;
+        
+        // Fetch user details from the server and display a greeting message
+        fetch('http://127.0.0.1:5000/get_user_details', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            // Include any necessary authentication headers if required for accessing user-specific data
+            // Example: headers: { 'Authorization': 'Bearer <token>' }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('User details:', data);
+            // Display a greeting with the username
+            var userGreetingDiv = document.getElementById("userGreeting");
+            userGreetingDiv.innerHTML = `<p>Hello, ${data.username}!</p>`;
+        })
+        .catch(error => {
+            console.error('There was an error fetching user details:', error);
+            alert('Failed to fetch user details. Please try again.');
+        });
+    </script>
+</body>
+</html>

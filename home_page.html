@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Homepage</title>
+</head>
+<body>
+    <h1>Welcome to Your Homepage!</h1>
+    <div id="userDetails">
+        <!-- User-specific content can go here -->
+    </div>
+
+    <script>
+        // Fetch user details from the server and populate the userDetails div
+        fetch('http://127.0.0.1:5000/get_user_details', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            // Include any necessary authentication headers if required for accessing user-specific data
+            // Example: headers: { 'Authorization': 'Bearer <token>' }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('User details:', data);
+            // Update the userDetails div with user-specific content
+            var userDetailsDiv = document.getElementById("userDetails");
+            userDetailsDiv.innerHTML = `<p>Username: ${data.username}</p>`;
+            // Add more content if needed based on the returned data
+        })
+        .catch(error => {
+            console.error('There was an error fetching user details:', error);
+            alert('Failed to fetch user details. Please try again.');
+        });
+    </script>
+</body>
+</html>
+

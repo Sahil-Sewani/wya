@@ -1,0 +1,13 @@
+CREATE TABLE User (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Package (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    package_name VARCHAR(100) NOT NULL,
+    tracking_number VARCHAR(100) NOT NULL,
+    user_id INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES User(id)
+);
