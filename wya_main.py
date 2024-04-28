@@ -13,9 +13,9 @@ jwt = JWTManager(app)
 # Database Configuration
 connection = pymysql.connect(
     host='sql5.freesqldatabase.com',
-    database='sql5672639',
-    user='sql5672639',
-    password='eYYYvQuXZC'
+    database='sql5702471',
+    user='sql5702471',
+    password='wal972auMB'
 )
 
 # User Model
@@ -110,27 +110,7 @@ def login():
                 return jsonify({'message': 'Password column not found'}), 500
         else:
             return jsonify({'message': 'User does not exist'}), 404
-'''
-# Add Package (Requires JWT)
-@app.route('/add_package', methods=['POST'])
-@jwt_required()
-def add_package():
-    current_user = get_jwt_identity()
-    data = request.get_json()
-    package_name = data.get('package_name')
-    tracking_number = data.get('tracking_number')
 
-    with connection.cursor() as cursor:
-        cursor.execute('SELECT * FROM User WHERE username = %s', (current_user,))
-        user = cursor.fetchone()
-        if not user:
-            return jsonify({'message': 'User not found'}), 404
-
-        cursor.execute('INSERT INTO Package (package_name, tracking_number, user_id) VALUES (%s, %s, %s)',
-                       (package_name, tracking_number, user['id']))
-        connection.commit()
-
-    return jsonify({'message': 'Package added successfully'}), 200
 '''
 # Add Package (Requires User Authentication)
 @app.route('/add_package', methods=['POST'])
@@ -147,6 +127,34 @@ def add_package():
         connection.commit()
 
     return jsonify({'message': 'Package added successfully'}), 200
+'''
+
+# Add Package (Requires User Authentication)
+@app.route('/add_package', methods=['POST'])
+def add_package():
+    data = request.get_json()
+    package_name = data.get('package_name')
+    tracking_number = data.get('tracking_number')
+    username = data.get('username')  # Retrieve username from the request
+
+    # Retrieve user_id from the database based on the provided username
+    with connection.cursor() as cursor:
+        cursor.execute('SELECT * FROM User WHERE username = %s', (username,))
+        user = cursor.fetchone()
+        if not user:
+            return jsonify({'message': 'User not found'}), 404
+
+        user_id = user['id']
+
+        # Perform the addition to the Package table
+        cursor.execute('INSERT INTO Package (package_name, tracking_number, user_id) VALUES (%s, %s, %s)',
+                       (package_name, tracking_number, user_id))
+        connection.commit()
+
+    return jsonify({'message': 'Package added successfully'}), 200
+
+
+
 
 # Get User's Packages (Requires JWT)
 @app.route('/get_packages', methods=['GET'])
